@@ -6,15 +6,17 @@ import System.IO
 import Parser (parseString)
 
 
-loop :: IO ()
-loop = do
-  putStr ">>> "
-  line <- getLine
+loop :: [String] -> IO ()
+loop [] = pure ()
+loop (line:rest) = do
   when (length line > 0) $ print $ parseString line
-  loop
+  putStr ">>> "
+  loop rest
 
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
   hSetBuffering stdin NoBuffering
-  loop
+  cnts <- getContents
+  putStr ">>> "
+  loop $ lines cnts
