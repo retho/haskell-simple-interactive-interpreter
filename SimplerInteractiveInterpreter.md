@@ -105,6 +105,10 @@ The following table lists the language's operators grouped in order of precedenc
 | Multiplicative | *, /, % |
 | Additive | +, - |
 | Assignment | = |
-
+<style>
+    table {
+        width:100%;
+    }
+</style>
 
 

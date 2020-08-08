@@ -181,6 +181,11 @@ The following table lists the language's operators grouped in order of precedenc
 | Additive | +, - |
 | Assignment | = |
 | Function | => |
+<style>
+    table {
+        width:100%;
+    }
+</style>
 
 
 ### Division
