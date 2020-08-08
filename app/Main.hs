@@ -1,6 +1,20 @@
 module Main where
 
-import Lib
+import Control.Monad
+import System.IO
+
+import Parser (parseString)
+
+
+loop :: IO ()
+loop = do
+  putStr ">>> "
+  line <- getLine
+  when (length line > 0) $ print $ parseString line
+  loop
 
 main :: IO ()
-main = someFunc
+main = do
+  hSetBuffering stdout NoBuffering
+  hSetBuffering stdin NoBuffering
+  loop

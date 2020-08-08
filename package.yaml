@@ -28,7 +28,7 @@ library:
     - parsec
 
 executables:
-  haskell-interpreter-exe:
+  main-exe:
     main:                Main.hs
     source-dirs:         app
     dependencies:
