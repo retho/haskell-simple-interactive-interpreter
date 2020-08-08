@@ -1,6 +1,4 @@
-module Parser (
-  parseString
-) where
+module Parser where
 
 import Text.ParserCombinators.Parsec
 
@@ -32,7 +30,7 @@ data Expression = ExpressionFactor Factor | ExpressionOperator Operator Expressi
 data Factor = FactorNumber Number | FactorIdentifier Identifier | FactorAssignment Assignment | FactorParens Expression deriving (Show)
 data Assignment = Assignment Identifier Expression deriving (Show)
 data Operator = Operator Char deriving (Show)
-data Identifier = Identifier String deriving (Show)
+data Identifier = Identifier String deriving (Show, Eq, Ord)
 data Number = Number Double deriving (Show)
 
 

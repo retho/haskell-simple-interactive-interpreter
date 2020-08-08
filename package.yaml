@@ -24,13 +24,20 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -Wall
+  default-extensions:
+  - ScopedTypeVariables
   dependencies:
-    - parsec
+  - parsec
+  - containers
 
 executables:
   main-exe:
     main:                Main.hs
     source-dirs:         app
+    ghc-options:
+    - -Wall
     dependencies:
     - haskell-interpreter
 

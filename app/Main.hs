@@ -1,17 +1,21 @@
 module Main where
 
-import Control.Monad
 import System.IO
 
-import Parser (parseString)
+import Interpreter (Interpreter, input, newInterpreter)
 
 
-loop :: [String] -> IO ()
-loop [] = pure ()
-loop (line:rest) = do
-  when (length line > 0) $ print $ parseString line
-  putStr ">>> "
-  loop rest
+loop :: [String] -> Interpreter -> IO ()
+loop [] _ = pure ()
+loop (line:rest) i
+  | length line == 0 = do
+      putStr ">>> "
+      loop rest i
+  | otherwise = do
+      case input line i of
+        (Left err) -> putStrLn err >> putStr ">>> " >> loop rest i
+        (Right (Just r, ii)) -> print r >> putStr ">>> " >> loop rest ii
+        (Right (Nothing, ii)) -> putStr ">>> " >> loop rest ii
 
 main :: IO ()
 main = do
@@ -19,4 +23,4 @@ main = do
   hSetBuffering stdin NoBuffering
   cnts <- getContents
   putStr ">>> "
-  loop $ lines cnts
+  loop (lines cnts) newInterpreter
