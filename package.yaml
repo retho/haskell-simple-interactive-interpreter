@@ -1,4 +1,4 @@
-name:                haskell-interpreter
+name:                haskell-simple-interactive-interpreter
 version:             0.1.0.0
 github:              "githubuser/haskell-interpreter"
 license:             BSD3
@@ -39,10 +39,10 @@ executables:
     ghc-options:
     - -Wall
     dependencies:
-    - haskell-interpreter
+    - haskell-simple-interactive-interpreter
 
 tests:
-  haskell-interpreter-test:
+  haskell-simple-interactive-interpreter-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -50,6 +50,6 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - haskell-interpreter
+    - haskell-simple-interactive-interpreter
     - hspec
     - HUnit
