@@ -55,7 +55,6 @@ eval scope (ExpressionFactor (FactorIdentifier ident)) i =
   case scope `union` globalScope i !? ident of
     Nothing -> Left $ "ERROR: Unknown identifier " <> "'" <> ident_name <> "'" where Identifier ident_name = ident
     Just val -> Right (val, i)
-
 eval scope (ExpressionFactor (FactorFunctionCall (FunctionCall fn_name args_exprs))) i0 =
   case scope `union` globalScope i0 !? fn_name of
     Nothing -> Left $ "ERROR: Unknown identifier " <> "'" <> ident_name <> "'" where Identifier ident_name = fn_name
