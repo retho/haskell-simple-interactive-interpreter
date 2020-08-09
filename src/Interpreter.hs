@@ -88,14 +88,13 @@ evalFnCall scope0 (FunctionDeclaration fn_name fn_args expr) args i
   | length fn_args /= length args = let Identifier fn_name_str = fn_name in Left
     $ "ERROR: function "
     <> "'" <> fn_name_str <> "'"
-    <> " expected "
+    <> " expect "
     <> show (length fn_args)
     <> " arguments, but "
     <> show (length args)
     <> " found"
   | otherwise = eval scope1 expr i
       where scope1 = fromList (zip fn_args args) `union` scope0 `union` globalScope i
-
 
 
 calc :: Operator -> Rep -> Rep -> Either String Rep
