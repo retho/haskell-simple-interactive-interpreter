@@ -93,9 +93,9 @@ evalFnCall scope0 (FunctionDeclaration fn_name fn_args expr) args i
     <> " arguments, but "
     <> show (length args)
     <> " found"
-  | otherwise = do
-    let scope1 = fromList (zip fn_args args) `union` scope0 `union` globalScope i
-    eval scope1 expr i
+  | otherwise = eval scope1 expr i
+      where scope1 = fromList (zip fn_args args) `union` scope0 `union` globalScope i
+
 
 
 calc :: Operator -> Rep -> Rep -> Either String Rep
