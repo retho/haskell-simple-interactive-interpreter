@@ -22,12 +22,56 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 
+# * https://github.com/commercialhaskell/rio
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wpartial-fields
+- -Wredundant-constraints
+default-extensions:
+- BangPatterns
+- BinaryLiterals
+- ConstraintKinds
+- DataKinds
+- DefaultSignatures
+- DeriveDataTypeable
+- DeriveFoldable
+- DeriveFunctor
+- DeriveGeneric
+- DeriveTraversable
+- DoAndIfThenElse
+- EmptyDataDecls
+- ExistentialQuantification
+- FlexibleContexts
+- FlexibleInstances
+- FunctionalDependencies
+- GADTs
+- GeneralizedNewtypeDeriving
+- InstanceSigs
+- KindSignatures
+- LambdaCase
+- MultiParamTypeClasses
+- MultiWayIf
+- NamedFieldPuns
+# - NoImplicitPrelude
+- OverloadedStrings
+- PartialTypeSignatures
+- PatternGuards
+- PolyKinds
+- RankNTypes
+- RecordWildCards
+- ScopedTypeVariables
+- StandaloneDeriving
+- TupleSections
+- TypeFamilies
+- TypeSynonymInstances
+- ViewPatterns
+
 library:
   source-dirs: src
-  ghc-options:
-  - -Wall
-  default-extensions:
-  - ScopedTypeVariables
   dependencies:
   - parsec
   - containers
@@ -36,8 +80,6 @@ executables:
   main-exe:
     main:                Main.hs
     source-dirs:         app
-    ghc-options:
-    - -Wall
     dependencies:
     - haskell-simple-interactive-interpreter
 
