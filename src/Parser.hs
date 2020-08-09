@@ -57,22 +57,31 @@ numberP :: Parser Number
 letterP :: Parser Char
 digitP :: Parser Char
 
+expressionP = expressionAdditiveP
 
-expressionP = try expressionAdditiveP <|> try expressionMultiplicativeP <|> (ExpressionFactor <$> factorP)
-expressionMultiplicativeP = do
-  expr1 <- ExpressionFactor <$> factorP
-  spaces
-  op <- operatorMultiplicativeP
-  spaces
-  expr2 <- try expressionMultiplicativeP <|> (ExpressionFactor <$> factorP)
-  pure $ ExpressionOperator op expr1 expr2
 expressionAdditiveP = do
-  expr1 <- try expressionMultiplicativeP <|> (ExpressionFactor <$> factorP)
-  spaces
-  op <- operatorAdditiveP
-  spaces
-  expr2 <- try expressionAdditiveP <|> try expressionMultiplicativeP <|> (ExpressionFactor <$> factorP)
-  pure $ ExpressionOperator op expr1 expr2
+  let
+    expressionAdditiveP' = do
+      spaces
+      op <- operatorAdditiveP
+      spaces
+      expr <- expressionMultiplicativeP
+      pure (op, expr)
+  first <- expressionMultiplicativeP
+  rest <- many (try expressionAdditiveP')
+  pure $ foldl (\acc (op, expr) -> ExpressionOperator op acc expr) first rest
+expressionMultiplicativeP = do
+  let
+    expressionMultiplicativeP' = do
+      spaces
+      op <- operatorMultiplicativeP
+      spaces
+      expr <- ExpressionFactor <$> factorP
+      pure (op, expr)
+  first <- ExpressionFactor <$> factorP
+  rest <- many (try expressionMultiplicativeP')
+  pure $ foldl (\acc (op, expr) -> ExpressionOperator op acc expr) first rest
+
 
 factorP = factorParensP <|> factorNumberP <|> try factorAssignmentP <|> factorIdentifierP
 factorNumberP = FactorNumber <$> numberP
