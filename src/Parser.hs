@@ -11,7 +11,6 @@ inputP :: Parser Input
 inputP = try (InputFunctionDeclaration <$> functionDeclarationP) <|> (InputExpression <$> expressionP)
 
 
-
 {--
 
 function        ::= fn-keyword fn-name { identifier } fn-operator expression
@@ -36,8 +35,8 @@ digit           ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 
 --}
 
-data FunctionDeclaration = FunctionDeclaration Identifier [Identifier] Expression
 
+data FunctionDeclaration = FunctionDeclaration Identifier [Identifier] Expression
 data Expression = ExpressionFactor Factor | ExpressionOperator Operator Expression Expression deriving (Show)
 data Factor = FactorNumber Number | FactorIdentifier Identifier | FactorFunctionCall FunctionCall | FactorAssignment Assignment | FactorParens Expression deriving (Show)
 data Assignment = Assignment Identifier Expression deriving (Show)
@@ -77,7 +76,8 @@ digitP :: Parser Char
 functionDeclarationP = do
   _ <- string "fn "
   spaces
-  fn_name:fn_args <- many1 (identifierP <* spaces)
+  fn_name <- identifierP
+  fn_args <- many1 $ try (spaces *> identifierP)
   spaces
   _ <- string "=>"
   spaces
@@ -108,7 +108,6 @@ expressionMultiplicativeP = do
   first <- ExpressionFactor <$> factorP
   rest <- many (try expressionMultiplicativeP')
   pure $ foldl (\acc (op, expr) -> ExpressionOperator op acc expr) first rest
-
 
 factorP = factorParensP <|> factorNumberP <|> try factorAssignmentP <|> try factorFunctionCallP <|> factorIdentifierP
 factorNumberP = FactorNumber <$> numberP
@@ -145,10 +144,8 @@ functionCallP = do
   fn_args <- many1 . try $ (ExpressionFactor <$> (try factorNumberP <|> try factorIdentifierP <|> factorParensP)) <* spaces
   pure $ FunctionCall fn_name fn_args
 
-
 operatorMultiplicativeP = Operator <$> oneOf "*/%"
 operatorAdditiveP = Operator <$> oneOf "+-"
 
 letterP = oneOf $ ['a'..'z'] <> ['A'..'Z']
 digitP = oneOf ['0'..'9']
-
