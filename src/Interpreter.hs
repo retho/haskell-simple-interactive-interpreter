@@ -100,14 +100,14 @@ evalFnCall scope0 (FunctionDeclaration fn_name fn_args expr) args i
 
 calc :: Operator -> Rep -> Rep -> Either String Rep
 calc (Operator '+') (RepNum x) (RepNum y) = pure . RepNum $ x + y
-calc (Operator '+') _ _ = error "Can perform calculations only on numbers"
+calc (Operator '+') _ _ = error "Can perform calculations only for numbers"
 calc (Operator '-') (RepNum x) (RepNum y) = pure . RepNum $ x - y
-calc (Operator '-') _ _ = error "Can perform calculations only on numbers"
+calc (Operator '-') _ _ = error "Can perform calculations only for numbers"
 calc (Operator '*') (RepNum x) (RepNum y) = pure . RepNum $ x * y
-calc (Operator '*') _ _ = error "Can perform calculations only on numbers"
+calc (Operator '*') _ _ = error "Can perform calculations only for numbers"
 calc (Operator '/') (RepNum x) (RepNum y) = pure . RepNum $ x / y
-calc (Operator '/') _ _ = error "Can perform calculations only on numbers"
+calc (Operator '/') _ _ = error "Can perform calculations only for numbers"
 calc (Operator '%') (RepNum x) (RepNum y) = pure . RepNum $ x - y * fromIntegral n
   where n :: Int = truncate $ x / y
-calc (Operator '%') _ _ = error "Can perform calculations only on numbers"
+calc (Operator '%') _ _ = error "Can perform calculations only for numbers"
 calc (Operator c) _ _ = error $ "Unknown operator " <> show c
