@@ -7,15 +7,15 @@ import Interpreter (Interpreter, input, newInterpreter)
 
 loop :: [String] -> Interpreter -> IO ()
 loop [] _ = pure ()
-loop (line:rest) i
+loop (line:rest) i0
   | length line == 0 = do
       putStr ">>> "
-      loop rest i
+      loop rest i0
   | otherwise = do
-      case input line i of
-        (Left err) -> putStrLn err >> putStr ">>> " >> loop rest i
-        (Right (Just r, ii)) -> print r >> putStr ">>> " >> loop rest ii
-        (Right (Nothing, ii)) -> putStr ">>> " >> loop rest ii
+      case input line i0 of
+        (Left err) -> putStrLn err >> putStr ">>> " >> loop rest i0
+        (Right (Just r, i1)) -> print r >> putStr ">>> " >> loop rest i1
+        (Right (Nothing, i1)) -> putStr ">>> " >> loop rest i1
 
 main :: IO ()
 main = do
