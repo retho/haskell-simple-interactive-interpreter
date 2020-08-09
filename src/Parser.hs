@@ -39,7 +39,7 @@ digit           ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 data FunctionDeclaration = FunctionDeclaration Identifier [Identifier] Expression
 
 data Expression = ExpressionFactor Factor | ExpressionOperator Operator Expression Expression deriving (Show)
-data Factor = FactorNumber Number | FactorFunctionCall FunctionCall | FactorAssignment Assignment | FactorParens Expression deriving (Show)
+data Factor = FactorNumber Number | FactorIdentifier Identifier | FactorFunctionCall FunctionCall | FactorAssignment Assignment | FactorParens Expression deriving (Show)
 data Assignment = Assignment Identifier Expression deriving (Show)
 data FunctionCall = FunctionCall Identifier [Expression] deriving (Show)
 data Operator = Operator Char deriving (Show)
@@ -54,6 +54,7 @@ expressionAdditiveP :: Parser Expression
 
 factorP :: Parser Factor
 factorNumberP :: Parser Factor
+factorIdentifierP :: Parser Factor
 factorFunctionCallP :: Parser Factor
 factorAssignmentP :: Parser Factor
 factorParensP :: Parser Factor
@@ -109,8 +110,9 @@ expressionMultiplicativeP = do
   pure $ foldl (\acc (op, expr) -> ExpressionOperator op acc expr) first rest
 
 
-factorP = factorParensP <|> factorNumberP <|> try factorAssignmentP <|> factorFunctionCallP
+factorP = factorParensP <|> factorNumberP <|> try factorAssignmentP <|> try factorFunctionCallP <|> factorIdentifierP
 factorNumberP = FactorNumber <$> numberP
+factorIdentifierP = FactorIdentifier <$> identifierP
 factorFunctionCallP = FactorFunctionCall <$> functionCallP
 factorAssignmentP = FactorAssignment <$> assignmentP
 factorParensP = FactorParens <$> (char '(' *> spaces *> expressionP <* spaces <* char ')')
@@ -140,7 +142,7 @@ identifierCharP = char '_' <|> letterP <|> digitP
 functionCallP = do
   fn_name <- identifierP
   spaces
-  fn_args <- many . try $ (ExpressionFactor <$> (try factorNumberP <|> factorParensP)) <* spaces
+  fn_args <- many1 . try $ (ExpressionFactor <$> (try factorNumberP <|> try factorIdentifierP <|> factorParensP)) <* spaces
   pure $ FunctionCall fn_name fn_args
 
 

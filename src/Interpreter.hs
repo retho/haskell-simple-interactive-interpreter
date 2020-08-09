@@ -21,12 +21,12 @@ newInterpreter = Interpreter {globalScope = empty}
 
 
 input :: String -> Interpreter -> Either String (Result, Interpreter)
-input source i = case parseString source of
+input source i0 = case parseString source of
   Left err -> Left (show err)
-  Right inp -> case input' inp i of
+  Right inp -> case input' inp i0 of
     Left err -> Left err
-    Right (RepNum val, ii) -> Right (Just val, ii)
-    Right (_, ii) -> Right (Nothing, ii)
+    Right (RepNum val, i1) -> Right (Just val, i1)
+    Right (_, i1) -> Right (Nothing, i1)
 
 
 input' :: Input -> Interpreter -> Either String (Rep, Interpreter)
@@ -41,6 +41,7 @@ input' (InputFunctionDeclaration fn@(FunctionDeclaration fn_name fn_args expr)) 
 
 findIdents :: Expression -> [Identifier]
 findIdents (ExpressionFactor (FactorNumber (Number _))) = []
+findIdents (ExpressionFactor (FactorIdentifier ident)) = [ident]
 findIdents (ExpressionFactor (FactorFunctionCall (FunctionCall fn_name args_exprs))) =
   fn_name : join (map findIdents args_exprs)
 findIdents (ExpressionFactor (FactorAssignment (Assignment _ expr))) = findIdents expr
@@ -50,6 +51,11 @@ findIdents (ExpressionOperator _ expr1 expr2) = findIdents expr1 <> findIdents e
 
 eval :: Scope -> Expression -> Interpreter -> Either String (Rep, Interpreter)
 eval _ (ExpressionFactor (FactorNumber (Number n))) i = pure (RepNum n, i)
+eval scope (ExpressionFactor (FactorIdentifier ident)) i =
+  case scope `union` globalScope i !? ident of
+    Nothing -> Left $ "ERROR: Unknown identifier " <> "'" <> ident_name <> "'" where Identifier ident_name = ident
+    Just val -> Right (val, i)
+
 eval scope (ExpressionFactor (FactorFunctionCall (FunctionCall fn_name args_exprs))) i0 =
   case scope `union` globalScope i0 !? fn_name of
     Nothing -> Left $ "ERROR: Unknown identifier " <> "'" <> ident_name <> "'" where Identifier ident_name = fn_name
